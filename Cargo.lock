@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "terminal_tictoctoe"
+name = "l19_terminal_tictactoe"
 version = "0.1.0"

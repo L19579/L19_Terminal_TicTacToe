@@ -1,4 +1,3 @@
-//See 24.
 use std::fmt;
 use std::cmp::PartialEq;
 
@@ -19,9 +18,21 @@ impl PartialEq for Piece{
     }   
 }
 
-struct PositionSelector{
+struct PlaySelector{
     piece: Piece,
-    position: usize,
+    position: usize, 
+    //prefer u8 here but working around small constraint.
+    //This echoes elsewhere though. Careful not to repeat
+    //in the future.
+}
+
+impl PlaySelector{
+    fn new (piece: Piece, position: usize) -> PlaySelector {
+        return PlaySelector {
+            piece,
+            position,
+        };
+    }
 }
 
 
@@ -40,20 +51,20 @@ impl TableState{
         return &self.positions;
     }
     
-    fn duplictate_with_new(&self, previous_table: &TableState, 
-                           new_play: Option<PositionSelector>) 
+    fn duplictate_with_new(&self, 
+                        new_play: Option<PlaySelector>) 
         -> Result<TableState, &'static str >{
         let positions_for_new: [Piece; 9];
         for i in 1..10 {
-            positions_for_new[i] = previous_table.positions[i];      
+            positions_for_new[i] = self.positions[i];      
         }
         match new_play {
-            Some(play) => {
-                if positions_for_new[play.position] != Piece::Clear
+            Some(played) => {
+                if positions_for_new[played.position] != Piece::Clear
                 {
                     return Err("Space occupied.");
                 }
-                positions_for_new[play.position] = play.piece;                
+                positions_for_new[played.position] = played.piece;                
                 return Ok(
                         TableState{
                             positions: positions_for_new,
@@ -75,12 +86,20 @@ pub struct GameMaster{
 
 impl GameMaster{
     //interface 
-    pub fn new(){
+    pub fn new() -> GameMaster {
+        let mut game_history: Vec::<TableState>;
+        game_history.push(TableState::new());
         
+        return GameMaster{
+            game_history, 
+        }
     }
-    pub fn add_move(_piece: Piece, _position: u8){
-        //TODO: Check last TableStact pos, is move legal?
-        //
+
+    pub fn add_move(&self, piece: Piece, position: usize){
+        let new_play = Some(PlaySelector::new(piece, position));
+        self.game_history.push(
+            self.game_history.last().duplicate_with_new(new_play)
+                .unwrap());
     } 
 
     pub fn backtrack(&self, _jumps: u8) -> Result<(), &'static str>{
