@@ -1,8 +1,8 @@
 # Purpose
 Testing Cargo.io submissions, versioning, and documentation.
 
-##Tests will be written around a game of TicTacToe
-### Terminal should be drawing this:
+##  Tests will be written around a game of TicTacToe
+### Terminal should be drawing this (format lost w/ .txt -> .md):
 
    |   |                        a1 |a2 |a3 
 ---|---|---                     ---|---|---
