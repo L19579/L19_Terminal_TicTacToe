@@ -1,8 +1,4 @@
-# Purpose
-Testing Cargo.io submissions, versioning, and documentation.
-
-##Tests will be written around a game of TicTacToe
-### Terminal should be drawing this:
+# Terminal should be drawing this:
 
    |   |                        a1 |a2 |a3 
 ---|---|---                     ---|---|---
