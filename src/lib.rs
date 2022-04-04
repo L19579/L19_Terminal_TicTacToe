@@ -6,6 +6,7 @@ pub enum Piece{
     Npc,
     Clear,
 }
+
 //This is redundant. Why can't Rust compute assert_eq! for enums
 //w/o explicit implementation? --> Likely an ext of lt uncertainties.
 impl PartialEq for Piece{
@@ -24,6 +25,7 @@ struct PlaySelector{
     //prefer u8 here but working around small constraint.
     //This echoes elsewhere though. Careful not to repeat
     //in the future.
+    //iter preferable. Slice indexing reqs usize as arg.
 }
 
 impl PlaySelector{
@@ -35,6 +37,30 @@ impl PlaySelector{
     }
 }
 
+struct WinOptions{
+    options: [(usize, usize, usize); 8], 
+}
+
+impl WinOptions{
+    fn new() -> WinOptions {
+       return WinOptions{
+           options: [
+               (1, 2, 3),
+               (4, 5, 6),
+               (7, 8, 9),
+               (1, 4, 7),
+               (2, 5, 8),
+               (3, 6, 9),
+               (1, 5, 9),
+               (3, 5, 7),
+           ],
+       };   
+    }
+
+    fn options(&self) -> [(usize, usize, usize); 8] {
+        return self.options;
+    }
+}
 
 struct TableState{
     positions: [Piece; 9],
@@ -51,8 +77,7 @@ impl TableState{
         return &self.positions;
     }
     
-    fn duplictate_with_new(&self, 
-                        new_play: Option<PlaySelector>) 
+    fn duplicate_with_new(&self, new_play: Option<PlaySelector>) 
         -> Result<TableState, &'static str >{
         let positions_for_new: [Piece; 9];
         for i in 1..10 {
@@ -78,19 +103,45 @@ impl TableState{
             }
         } 
     }
+
+    fn check_win(&self, win_options: &WinOptions) -> bool{
+        let win: bool = false;
+        for win_option in win_options.options(){
+            if self.positions[win_option.0] != Piece::Clear
+                && self.positions[win_option.0]
+                == self.positions[win_option.1]
+                && self.positions[win_option.1]
+                == self.positions[win_option.2]{
+                win = true;
+            }
+        }
+        return win;
+    }
 }
 
 pub struct GameMaster{
-    game_history: Vec::<TableState>, 
+    win_options: WinOptions,
+    game_history: Vec::<TableState>,
 }
 
 impl GameMaster{
+    /* [x] new
+     * [x] add_move
+     * [/] reverse (backtrack)
+     * [ ] print board
+     * [/] check for win
+     * [x] check move legality integrated in TableState
+     * [ ] Control flow (gameplay) - likely in main
+     */
+
     //interface 
     pub fn new() -> GameMaster {
+        let win_options = WinOptions::new();
         let mut game_history: Vec::<TableState>;
         game_history.push(TableState::new());
         
         return GameMaster{
+            win_options,
             game_history, 
         }
     }
@@ -98,7 +149,7 @@ impl GameMaster{
     pub fn add_move(&self, piece: Piece, position: usize){
         let new_play = Some(PlaySelector::new(piece, position));
         self.game_history.push(
-            self.game_history.last().duplicate_with_new(new_play)
+            self.game_history.last().unwrap().duplicate_with_new(new_play)
                 .unwrap());
     } 
 
@@ -108,8 +159,8 @@ impl GameMaster{
             jumps = 2; 
         }
         
-        if self.game_history.len() => jumps {
-            
+        if self.game_history.len() >= jumps {
+            // TODO --------------------------------------------------------
             return Ok()
         } else {
             return Err("Excess range.");
@@ -120,6 +171,6 @@ impl GameMaster{
 
 impl fmt::Display for TableState{
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        //
+        // TODO --------------------------------------------------------
     }
 }
