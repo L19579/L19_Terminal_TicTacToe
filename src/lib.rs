@@ -104,7 +104,7 @@ impl TableState{
         } 
     }
 
-    fn check_win(&self, win_options: &WinOptions) -> bool{
+    fn is_win(&self, win_options: &WinOptions) -> bool{
         let win: bool = false;
         for win_option in win_options.options(){
             if self.positions[win_option.0] != Piece::Clear
@@ -165,6 +165,10 @@ impl GameMaster{
         } else {
             return Err("Excess range.");
         } 
+    }
+
+    pub fn check_win(&self) -> bool {
+        return self.game_history.last().unwrap().is_win(&self.win_options);
     }
     
 }
