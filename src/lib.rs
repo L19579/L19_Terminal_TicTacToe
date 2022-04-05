@@ -6,6 +6,17 @@ pub enum Piece{
     Clear,
 }
 
+impl Piece{
+    fn sign(&self, formatter: &mut fmt::Formatter)
+        -> fmt::Result{
+        return match *self{
+                Piece::User => write!(formatter, "X"),    
+                Piece::Npc => write!(formatter, "Y"),    
+                Piece::Clear => write!(formatter, " "),    
+        } 
+    }
+}
+
 //This is redundant. Why can't Rust compute assert_eq! for enums
 //w/o explicit implementation? --> Likely an ext of lt uncertainties.
 impl PartialEq for Piece{
@@ -21,12 +32,13 @@ impl PartialEq for Piece{
 impl fmt::Display for Piece{
     fn fmt(&self, formatter: &mut fmt::Formatter)
         -> fmt::Result{
-            match *self{
+            return match *self{
                 Piece::User => write!(formatter, "User"),    
                 Piece::Npc => write!(formatter, "Npc"),    
                 Piece::Clear => write!(formatter, "Clear"),    
-            }
+            };
         }
+    
 }
 impl Copy for Piece{}
 impl Clone for Piece{
@@ -129,17 +141,16 @@ impl TableState{
     }
 
     fn is_win(&self, win_options: &WinOptions) -> bool{
-        let mut win: bool = false;
         for win_option in win_options.options(){
             if self.positions[win_option.0] != Piece::Clear
                 && self.positions[win_option.0]
                 == self.positions[win_option.1]
                 && self.positions[win_option.1]
                 == self.positions[win_option.2]{
-                win = true;
+                return true;
             }
         }
-        return win;
+        return false;
     }
 }
 
@@ -153,7 +164,7 @@ impl GameMaster{
     /* [x] new
      * [x] add_move
      * [x] reverse (backtrack)
-     * [ ] print table
+     * [x] print table
      * [x] check for win
      * [x] check move legality integrated in TableState
      */
@@ -199,9 +210,16 @@ impl GameMaster{
         if history_index < 0 {
             return Err("Request beyond acceptable range.");
         }
-        let ref_table = &self.game_history[history_index as usize];
-        println!("Player: {}", ref_table.player); 
-
+        let reference_table = &self.game_history[history_index as usize];
+        let t_positions = reference_table.positions();
+        let l = String::from("_"); //Should find a way around this.
+        println!("Player: {}", reference_table.player); 
+         
+        println!("\t {} | {} | {} ", t_positions[0], t_positions[1], t_positions[2]);
+        println!("\t{:_>3}|{:_>3}|{:_>3}", l, l, l);
+        println!("\t {} | {} | {} ", t_positions[3], t_positions[4], t_positions[5]);
+        println!("\t{:_>3}|{:_>3}|{:_>3}", l, l, l);
+        println!("\t {} | {} | {} ", t_positions[6], t_positions[7], t_positions[8]);
         return Ok(());
     }
 }
