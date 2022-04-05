@@ -1,5 +1,4 @@
-use std::fmt;
-use std::cmp::PartialEq;
+use std::{fmt, cmp::PartialEq};
 
 pub enum Piece{
     User,
@@ -16,7 +15,24 @@ impl PartialEq for Piece{
         } else {
         return false;
         }
-    }   
+    }
+}
+
+impl fmt::Display for Piece{
+    fn fmt(&self, formatter: &mut fmt::Formatter)
+        -> fmt::Result{
+            match *self{
+                Piece::User => write!(formatter, "User"),    
+                Piece::Npc => write!(formatter, "Npc"),    
+                Piece::Clear => write!(formatter, "Clear"),    
+            }
+        }
+}
+impl Copy for Piece{}
+impl Clone for Piece{
+    fn clone(&self) -> Piece {
+        return *self;
+    }
 }
 
 struct PlaySelector{
@@ -64,12 +80,16 @@ impl WinOptions{
 
 struct TableState{
     positions: [Piece; 9],
+    player: Piece,
 }
-
+//Would have been simpler to use new(args) in a TableState Vec.
+//Benefits of current structure don't help readability.
+//See duplicate_with_new(), change with versioning. TODO.
 impl TableState{
     fn new() -> TableState {
         return TableState{
-            positions: [Piece::Clear; 9]  
+            positions: [Piece::Clear; 9],
+            player: Piece::Clear,
         };
     }
 
@@ -77,12 +97,18 @@ impl TableState{
         return &self.positions;
     }
     
+    fn player(&self) -> &Piece{
+        return &self.player
+    }
+    
     fn duplicate_with_new(&self, new_play: Option<PlaySelector>) 
         -> Result<TableState, &'static str >{
-        let positions_for_new: [Piece; 9];
+        let mut positions_for_new: [Piece; 9] = [Piece::Clear; 9];
         for i in 1..10 {
             positions_for_new[i] = self.positions[i];      
         }
+        //Unfinished thought here. This was meant to remove new()
+        //Saved versioning. None for match should change. TODO
         match new_play {
             Some(played) => {
                 if positions_for_new[played.position] != Piece::Clear
@@ -93,19 +119,17 @@ impl TableState{
                 return Ok(
                         TableState{
                             positions: positions_for_new,
+                            player: played.piece,
                         })
             },
             None => {
-                return Ok(
-                    TableState{
-                        positions: positions_for_new,
-                    })
+                return Err("No new moves submitted.");
             }
         } 
     }
 
     fn is_win(&self, win_options: &WinOptions) -> bool{
-        let win: bool = false;
+        let mut win: bool = false;
         for win_option in win_options.options(){
             if self.positions[win_option.0] != Piece::Clear
                 && self.positions[win_option.0]
@@ -122,22 +146,22 @@ impl TableState{
 pub struct GameMaster{
     win_options: WinOptions,
     game_history: Vec::<TableState>,
+     
 }
 
 impl GameMaster{
     /* [x] new
      * [x] add_move
-     * [/] reverse (backtrack)
-     * [ ] print board
-     * [/] check for win
+     * [x] reverse (backtrack)
+     * [ ] print table
+     * [x] check for win
      * [x] check move legality integrated in TableState
-     * [ ] Control flow (gameplay) - likely in main
      */
 
     //interface 
     pub fn new() -> GameMaster {
         let win_options = WinOptions::new();
-        let mut game_history: Vec::<TableState>;
+        let mut game_history = Vec::<TableState>::new();
         game_history.push(TableState::new());
         
         return GameMaster{
@@ -146,35 +170,38 @@ impl GameMaster{
         }
     }
 
-    pub fn add_move(&self, piece: Piece, position: usize){
+    pub fn add_move(&mut self, piece: Piece, position: usize){
         let new_play = Some(PlaySelector::new(piece, position));
         self.game_history.push(
             self.game_history.last().unwrap().duplicate_with_new(new_play)
                 .unwrap());
     } 
 
-    pub fn backtrack(&self, _jumps: u8) -> Result<(), &'static str>{
-        let jumps = _jumps *2 ;
-        if jumps < 2 { 
-            jumps = 2; 
+    pub fn backtrack(&mut self, jumps: u8) -> Result<(), &'static str>{
+    //It's on cleaning up type casts in v2.
+    //TODO: Potential unhandled bugs
+        if jumps < 1 as u8 ||  
+            jumps*2 >= (self.game_history.len() - 2) as u8 {
+            return Err("Backtrack: out of range request.");
         }
         
-        if self.game_history.len() >= jumps {
-            // TODO --------------------------------------------------------
-            return Ok()
-        } else {
-            return Err("Excess range.");
-        } 
+        self.game_history.truncate((jumps*2)as usize); 
+        println!("Jumping back to play #{}", self.game_history.len());
+        return Ok(());
     }
 
     pub fn check_win(&self) -> bool {
         return self.game_history.last().unwrap().is_win(&self.win_options);
     }
-    
-}
+   
+    pub fn print_table(&self, reversed_history_index: isize) -> Result<(), &'static str>{
+        let history_index = (self.game_history.len() as isize - reversed_history_index) - 1;
+        if history_index < 0 {
+            return Err("Request beyond acceptable range.");
+        }
+        let ref_table = &self.game_history[history_index as usize];
+        println!("Player: {}", ref_table.player); 
 
-impl fmt::Display for TableState{
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // TODO --------------------------------------------------------
+        return Ok(());
     }
 }
