@@ -22,7 +22,8 @@ impl Eq for Piece{}
 impl PartialEq for Piece{
     fn eq(&self, other: &Piece) -> bool{
         //Easy to make the obv error here. Tracking runtime
-        //bugs on a large codebase, not so much.
+        //bugs on a large codebase, not so much. rustc is no
+        //help. Careful.
         return self.as_str() == other.as_str();
     }
 }
@@ -75,14 +76,14 @@ impl WinOptions{
     fn new() -> WinOptions {
        return WinOptions{
            options: [
-               (0, 1, 2),
-               (3, 4, 5),
-               (6, 7, 8),
-               (0, 3, 6),
+               (1, 2, 3),
+               (4, 5, 6),
+               (7, 8, 9),
                (1, 4, 7),
                (2, 5, 8),
-               (0, 4, 8),
-               (2, 4, 6),
+               (3, 6, 9),
+               (1, 5, 9),
+               (3, 5, 7),
            ],
        };   
     }
@@ -121,10 +122,10 @@ impl TableState{
             return Err("Illegal play: space occupied.");
         }
         */
-        
-        if self.positions[new_play.position] != Piece::Clear{
+        if new_play.piece == Piece::Clear {
             return Err("Illegal play: space occupied.");
         }
+        
         let mut positions_for_new: [Piece; 9] = [Piece::Clear; 9]; 
         
         for i in 0..9 {
@@ -142,11 +143,10 @@ impl TableState{
 
     fn is_win(&self, win_options: &WinOptions) -> bool{
         for win_option in win_options.options(){
-            
             if self.positions[win_option.0] != Piece::Clear
                 && self.positions[win_option.0]
                 == self.positions[win_option.1]
-                && self.positions[win_option.0]
+                && self.positions[win_option.1]
                 == self.positions[win_option.2]{
                 return true;
             }
@@ -166,6 +166,7 @@ impl Clone for TableState{
 pub struct GameMaster{
     win_options: WinOptions,
     game_history: Vec::<TableState>,
+     
 }
 
 impl GameMaster{
@@ -188,18 +189,15 @@ impl GameMaster{
     }
 
     pub fn npc_random_move(&mut self){
-        let mut open_positions = Vec::<usize>::new();
-        let mut counter = 0;
+        let mut  open_positions = Vec::<Rc::<Piece>>::new(); 
         for piece in *self.game_history.last().unwrap().positions(){
             if piece == Piece::Clear{
-                open_positions.push(counter);
-                println!("Space {} is clear.", counter);
+                open_positions.push(Rc::new(piece));
             }
-            counter += 1;
         } 
         let mut rng = thread_rng(); 
-        let rng_pick: usize = rng.gen_range(0..(open_positions.len()));
-        self.add_move(Piece::Npc, open_positions[rng_pick]); 
+        let selected_pos: usize = rng.gen_range(0..(open_positions.len()));
+        self.add_move(Piece::Npc, selected_pos); 
     }
     
     pub fn back_track(&mut self, jumps: u8) -> Result<(), &'static str>{
@@ -215,9 +213,8 @@ impl GameMaster{
         return Ok(());
     }
 
-    pub fn check_win(&self) -> (bool, &Piece) {
-        return (self.game_history.last().unwrap().is_win(&self.win_options),
-            self.game_history.last().unwrap().player());
+    pub fn check_win(&self) -> bool {
+        return self.game_history.last().unwrap().is_win(&self.win_options);
     }
    
     pub fn print_table(&self, reversed_history_index: isize) -> Result<(), &'static str>{
@@ -227,7 +224,7 @@ impl GameMaster{
         }
         let reference_table = &self.game_history[history_index as usize];
         let t_positions = reference_table.positions();
-        let l = String::from("_"); //Should clean this up.
+        let l = String::from("_"); //Should find a way around this.
         println!("Player: {}", reference_table.player.as_str()); 
         
         println!("\t {} | {} | {} ", t_positions[0], t_positions[1], t_positions[2]);

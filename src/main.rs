@@ -33,17 +33,11 @@ fn main() {
 
     let user_input = String::new();
     let mut gm = l19::GameMaster::new();
-    gm.print_table(0).unwrap();
-    gm.add_move(l19::Piece::User, 5); 
-    gm.print_table(0).unwrap();
-    gm.add_move(l19::Piece::Npc, 4);
-    //Below shouldn't be possible.
-    gm.add_move(l19::Piece::User, 4);
-    gm.print_table(0).unwrap();
+    for i in 0..9{
+        gm.npc_random_move();
+        gm.print_table(0).unwrap();
     
-    //Throws error:
-    //gm.npc_random_move();
-    //gm.print_table(0).unwrap();
+    }
 
    // loop{
         
