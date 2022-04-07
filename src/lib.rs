@@ -1,10 +1,11 @@
-use std::{fmt, cmp::PartialEq};
 use rand::{ Rng, thread_rng };
 use std::{
-    time::Duration,
-    io::stdin,
+    io::{Write, stdin,},
+    cmp::PartialEq,
     collections::HashMap,
+    time::Duration,
     thread, //heavy
+    fmt, 
 };
 
 pub enum Piece{
@@ -81,10 +82,6 @@ impl PlaySelector{
             piece,
             position,
         };
-    }
-
-    fn piece(&self) -> &Piece {
-        return &self.piece
     }
 }
 
@@ -181,11 +178,12 @@ impl Clone for TableState{
 pub struct GameMaster <'a>{
     win_options: WinOptions,
     game_history: Vec::<TableState>,
-    key_bindings: Option::<HashMap<&'a str, usize>>
+    key_bindings: &'a HashMap<&'a str, usize>
+    //key_bindings are now a req.  
 }
 
 impl<'a> GameMaster<'a>{
-    pub fn new() -> GameMaster<'a> {
+    pub fn new(key_bindings_c: &'a HashMap<&'a str, usize>) -> GameMaster<'a> {
         let win_options = WinOptions::new();
         let mut game_history = Vec::<TableState>::new();
         game_history.push(TableState::new());
@@ -193,30 +191,23 @@ impl<'a> GameMaster<'a>{
         return GameMaster{
             win_options,
             game_history,
-            key_bindings: None,
+            key_bindings: key_bindings_c,
         }
     }
 
-    pub fn set_key_bindings(&mut self, choice: HashMap<&'a str, usize>)
-        -> Result<(), &'static str>{
-        self.key_bindings = Some(choice); 
-        return Ok(());
-    }
-    
     pub fn next_mover_w_prompt
-        (&mut self, last_piece: &Piece, key_bindings: HashMap::<&str, &str>) 
-        -> Result<(), &'static str> {
+        (&mut self, last_piece: &Piece) 
+            -> Result<(), &'static str> { //key_bindings needs rethinking
         match *last_piece {
             Piece::User => {
-                print!("Bot is thinking");
-                for i in 0..2 {
+                print!("Npc is thinking");
+                for _ in 0..4 {
+                    std::io::stdout().flush().unwrap();
                     print!(".");
                     thread::sleep(Duration::from_millis(500));
                 }
                 println!();
                 self.npc_random_move();
-                self.print_table(0);
-                return Ok (());
             }, 
             Piece::Npc => {
                 let mut user_input = String::new();
@@ -227,31 +218,30 @@ impl<'a> GameMaster<'a>{
                         return Err("Error reading line.)");
                     },
                 };
-                
-                if user_input.as_str() == "quit"{ 
+                let user_input: &str = user_input.trim(); 
+                if user_input == "quit"{ 
                     return Err("quit");
-                }
+                };
                 
                 let converted_input : usize = 
-                    match key_bindings.get(user_input.as_str()){
+                    match self.key_bindings.get(user_input){
                         Some(input) => {
-                            *input // Error here: Getting &&Str ---------------------------
+                            *input
                         },
                         None => {
-                            return Err("Invalid input");
+                            return Err("Invalid input: binding error.");
                         },
                 };
                 
                 self.add_move(Piece::User, converted_input);
-                return Ok(());
             },
             _ => {
                 return Err("Invalid input");
-            }
-            self.print_table(0);
-
+            },
+        };
+            self.print_table(0).unwrap();
+            return Ok(());
         } 
-    } 
 
     pub fn add_move(&mut self, piece: Piece, position: usize){
         let new_play = PlaySelector::new(piece, position);
@@ -266,7 +256,6 @@ impl<'a> GameMaster<'a>{
         for piece in *self.game_history.last().unwrap().positions(){
             if piece == Piece::Clear{
                 open_positions.push(counter);
-                println!("Space {} is clear.", counter);
             }
             counter += 1;
         } 

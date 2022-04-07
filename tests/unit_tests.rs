@@ -1,5 +1,24 @@
 use l19_terminal_tictactoe as l19;
 
+//Testing custom 'input bindings'.. if you will.
+#[Test]
+fn check_input_bindings(){
+    let input_bindins : HashMap::<&str, usize> = HashMap::from([
+        ("a1", 0),
+        ("a2", 1),
+        ("a3", 2),
+        ("b1", 3),
+        ("b2", 4),
+        ("b3", 5),
+        ("c1", 6),
+        ("c2", 7),
+        ("c3", 8),
+    ]);
+
+    let gm = 19::GameMaster::new();
+
+}
+
 //Piece legal placement in 9/9 spaces.
 #[test]
 fn check_legal_placement(){
@@ -88,6 +107,5 @@ fn check_some_non_win(){
         gm.add_move(l19::Piece::User, c);
         let (is_win, _) = gm.check_win();
         assert_eq!(is_win, false);
-    }
-    
+    }    
 }
