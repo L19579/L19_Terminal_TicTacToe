@@ -1,11 +1,8 @@
 use std::{fmt, cmp::PartialEq};
 use rand::{ Rng, thread_rng };
-use std::{
-    time::Duration,
-    io::stdin,
-    collections::HashMap,
-    thread, //heavy
-};
+use std::thread;
+use std::time::Duration;
+use std::rc::Rc;
 
 pub enum Piece{
     User,
@@ -178,34 +175,24 @@ impl Clone for TableState{
 }
 
 //interface to main.rs
-pub struct GameMaster <'a>{
+pub struct GameMaster{
     win_options: WinOptions,
     game_history: Vec::<TableState>,
-    key_bindings: Option::<HashMap<&'a str, usize>>
 }
 
-impl<'a> GameMaster<'a>{
-    pub fn new() -> GameMaster<'a> {
+impl GameMaster{
+    pub fn new() -> GameMaster {
         let win_options = WinOptions::new();
         let mut game_history = Vec::<TableState>::new();
         game_history.push(TableState::new());
         
         return GameMaster{
             win_options,
-            game_history,
-            key_bindings: None,
+            game_history, 
         }
     }
-
-    pub fn set_key_bindings(&mut self, choice: HashMap<&'a str, usize>)
-        -> Result<(), &'static str>{
-        self.key_bindings = Some(choice); 
-        return Ok(());
-    }
     
-    pub fn next_mover_w_prompt
-        (&mut self, last_piece: &Piece, key_bindings: HashMap::<&str, &str>) 
-        -> Result<(), &'static str> {
+    pub fn next_mover_w_prompt(&mut self, last_piece: &Piece) -> String {
         match *last_piece {
             Piece::User => {
                 print!("Bot is thinking");
@@ -215,40 +202,12 @@ impl<'a> GameMaster<'a>{
                 }
                 println!();
                 self.npc_random_move();
-                self.print_table(0);
-                return Ok (());
+                self.print_table(); 
+                println!("User's turn.")
             }, 
             Piece::Npc => {
-                let mut user_input = String::new();
-                print!("User's turn: ");
-                match stdin().read_line(&mut user_input){
-                    Ok(_) => (),
-                    Err(_) => {
-                        return Err("Error reading line.)");
-                    },
-                };
                 
-                if user_input.as_str() == "quit"{ 
-                    return Err("quit");
-                }
-                
-                let converted_input : usize = 
-                    match key_bindings.get(user_input.as_str()){
-                        Some(input) => {
-                            *input // Error here: Getting &&Str ---------------------------
-                        },
-                        None => {
-                            return Err("Invalid input");
-                        },
-                };
-                
-                self.add_move(Piece::User, converted_input);
-                return Ok(());
-            },
-            _ => {
-                return Err("Invalid input");
             }
-            self.print_table(0);
 
         } 
     } 

@@ -181,7 +181,7 @@ impl Clone for TableState{
 pub struct GameMaster <'a>{
     win_options: WinOptions,
     game_history: Vec::<TableState>,
-    key_bindings: Option::<HashMap<&'a str, usize>>
+    key_bindings: Option::<HashMap<&'a str, &'a str>>
 }
 
 impl<'a> GameMaster<'a>{
@@ -195,12 +195,6 @@ impl<'a> GameMaster<'a>{
             game_history,
             key_bindings: None,
         }
-    }
-
-    pub fn set_key_bindings(&mut self, choice: HashMap<&'a str, usize>)
-        -> Result<(), &'static str>{
-        self.key_bindings = Some(choice); 
-        return Ok(());
     }
     
     pub fn next_mover_w_prompt
@@ -221,34 +215,17 @@ impl<'a> GameMaster<'a>{
             Piece::Npc => {
                 let mut user_input = String::new();
                 print!("User's turn: ");
-                match stdin().read_line(&mut user_input){
-                    Ok(_) => (),
-                    Err(_) => {
-                        return Err("Error reading line.)");
-                    },
-                };
+                let mut stdin = stdin().read_line(&mut user_input);
                 
                 if user_input.as_str() == "quit"{ 
                     return Err("quit");
                 }
                 
-                let converted_input : usize = 
-                    match key_bindings.get(user_input.as_str()){
-                        Some(input) => {
-                            *input // Error here: Getting &&Str ---------------------------
-                        },
-                        None => {
-                            return Err("Invalid input");
-                        },
-                };
-                
-                self.add_move(Piece::User, converted_input);
                 return Ok(());
             },
             _ => {
                 return Err("Invalid input");
             }
-            self.print_table(0);
 
         } 
     } 

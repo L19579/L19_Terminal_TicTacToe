@@ -1,3 +1,4 @@
+use rand::{ Rng, thread_rng };
 use std::collections::HashMap;
 use l19_terminal_tictactoe as l19;
 
@@ -15,33 +16,32 @@ fn main() {
     //      [ ] If true announce winner and exit loop.
     //[ ] Announce game exit.
     
-
-    let input_bindings = HashMap::from([
-            ("a1", "1"),
-            ("a2", "2"),
-            ("a3", "3"),
-            ("b1", "4"),
-            ("b2", "5"),
-            ("b3", "6"),
-            ("c1", "7"),
-            ("c2", "8"),
-            ("c3", "9"),
+    let mut m_rng = thread_rng();
+    let input_bindings : HashMap::<&str, usize> = HashMap::from([
+            ("a1", 1),
+            ("a2", 2),
+            ("a3", 3),
+            ("b1", 4),
+            ("b2", 5),
+            ("b3", 6),
+            ("c1", 7),
+            ("c2", 8),
+            ("c3", 9),
     ]); 
     
     println!("Launching L19_Terminal_TicTacToe");
     println!("Write \"quit\" at any time to exit");
-
+    
     let user_input = String::new();
     let mut gm = l19::GameMaster::new();
-    for i in 0..9{
-        gm.npc_random_move();
-        gm.print_table(0).unwrap();
-    
-    }
-
-   // loop{
+   
+    'top_loop: loop{
+        let starting_player: l19::Piece = 
+            l19::Piece::select_with_int(m_rng.gen_range(0..1));
+            // Explain key bindings here.
         
-   // }
-    
-
+        
+        'inner_loop: loop {
+        }
+    }
 }

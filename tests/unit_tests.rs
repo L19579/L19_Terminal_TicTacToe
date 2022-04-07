@@ -1,18 +1,15 @@
 use l19_terminal_tictactoe as l19;
 
-//Bot legal placement in 9/9 spaces.
-//Expected result: ok.
+//Piece legal placement in 9/9 spaces.
 #[test]
-fn bot_solo(){
+fn check_legal_placement(){
     let mut gm = l19::GameMaster::new();
     for i in 0..9{
         gm.npc_random_move();
-        gm.print_table(0).unwrap();
     }
 }
 
 //Detecting all possible wins sans bot
-//Expected result: ok.
 #[test]
 fn check_all_wins(){
     let win_count: u8 = 0;
@@ -35,8 +32,10 @@ fn check_all_wins(){
         gm.add_move(l19::Piece::User, c);
         let (is_win, player) = gm.check_win();
         
+        if *player != l19::Piece::User {
+            panic!();
+        } 
         assert_eq!(is_win, true);
-        //assert_eq!(player, String::from("User"));
     }
     
     for (a, b, c) in win_possibilities {
@@ -45,13 +44,12 @@ fn check_all_wins(){
         gm.add_move(l19::Piece::Npc, b); 
         gm.add_move(l19::Piece::Npc, c);
         let (is_win, player) = gm.check_win();
+        
         if *player != l19::Piece::Npc {
-            panic!("yeye");
+            panic!();
         } 
         assert_eq!(is_win, true);
-        //assert_eq!(player, String::from("Npc"));
     }
-
 
     for (a, b, c) in win_possibilities {
         let mut gm = l19::GameMaster::new();
@@ -60,9 +58,36 @@ fn check_all_wins(){
         gm.add_move(l19::Piece::Clear, c);
         let (is_win, player) = gm.check_win();
         
+        if *player != l19::Piece::Clear {
+            panic!();
+        } 
+        //Piece::Clear cannot win.
         assert_eq!(is_win, false);
-        //assert_eq!(player.as_str(), String::from("Clear"));
     }
+}
 
-    //assert_eq!(win_count, 8);
+//Detecting non wins. Not exhaustive, too many plays.
+#[test]
+fn check_some_non_win(){
+    let some_non_wins: [(usize, usize, usize) ; 8]
+        = [
+            (0, 1, 3), 
+            (0, 1, 4), 
+            (0, 3, 4), 
+            (0, 4, 5), 
+            (1, 4, 5), 
+            (1, 3, 5), 
+            (2, 4, 5), 
+            (2, 6, 8), 
+        ];
+
+    for (a, b, c) in some_non_wins {
+        let mut gm = l19::GameMaster::new();
+        gm.add_move(l19::Piece::User, a);
+        gm.add_move(l19::Piece::User, b);
+        gm.add_move(l19::Piece::User, c);
+        let (is_win, _) = gm.check_win();
+        assert_eq!(is_win, false);
+    }
+    
 }
