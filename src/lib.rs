@@ -197,7 +197,7 @@ impl<'a> GameMaster<'a>{
 
     pub fn next_mover_w_prompt
         (&mut self, last_piece: &Piece) 
-            -> Result<(), &'static str> { //key_bindings needs rethinking
+            -> Result<(), &'static str> { 
         match *last_piece {
             Piece::User => {
                 print!("Npc is thinking");
@@ -233,7 +233,12 @@ impl<'a> GameMaster<'a>{
                         },
                 };
                 
-                self.add_move(Piece::User, converted_input);
+                match self.add_move(Piece::User, converted_input) {
+                    Ok(()) => (),
+                    Err(e) => {
+                        return Err(e);
+                    }
+                };
             },
             _ => {
                 return Err("Invalid input");
@@ -243,11 +248,17 @@ impl<'a> GameMaster<'a>{
             return Ok(());
         } 
 
-    pub fn add_move(&mut self, piece: Piece, position: usize){
+    pub fn add_move(&mut self, piece: Piece, position: usize) -> Result <(), &'static str>{
         let new_play = PlaySelector::new(piece, position);
         self.game_history.push(
-            self.game_history.last().unwrap().duplicate_with_new(new_play)
-                .unwrap());
+            match self.game_history.last().unwrap().duplicate_with_new(new_play){
+                Ok(new_table) => new_table,
+                Err (e) => {
+                    return Err(e);
+                },
+            });
+        
+        return Ok(());
     }
 
     pub fn npc_random_move(&mut self){
@@ -261,9 +272,10 @@ impl<'a> GameMaster<'a>{
         } 
         let mut rng = thread_rng(); 
         let rng_pick: usize = rng.gen_range(0..(open_positions.len()));
-        self.add_move(Piece::Npc, open_positions[rng_pick]); 
+        self.add_move(Piece::Npc, open_positions[rng_pick]).unwrap(); 
     }
     
+    //This fn is not in use. Will have it running in v2. Overkill atm.
     pub fn back_track(&mut self, jumps: u8) -> Result<(), &'static str>{
     //It's on cleaning up type casts in v2.
     //TODO: Potential unhandled bugs
@@ -298,5 +310,22 @@ impl<'a> GameMaster<'a>{
         println!("\t{:_>3}|{:_>3}|{:_>3}", l, l, l);
         println!("\t {} | {} | {} ", t_positions[6], t_positions[7], t_positions[8]);
         return Ok(());
+    }
+
+    pub fn show_labeled_table(&self){
+        let l = "_";
+        let mut key : Vec::<&str> = Vec::new(); 
+        for (k, _) in self.key_bindings.iter(){
+            key.push(k);
+        }
+        key.sort();
+        //Potential bug if user's allowed unrestricted liberties with bindings.
+        //This doesn't work if the UTF-8s aren't chronological.
+        println!("\t {}| {}| {} ", key[0], key[1], key[2]);
+        println!("\t{:_>3}|{:_>3}|{:_>3}", l, l, l);
+        println!("\t {}| {}| {} ", key[3], key[4], key[5]);
+        println!("\t{:_>3}|{:_>3}|{:_>3}", l, l, l);
+        println!("\t {}| {}| {} ", key[6], key[7], key[8]);
+    
     }
 }
