@@ -176,19 +176,21 @@ impl Clone for TableState{
 
 //interface to main.rs
 pub struct GameMaster <'a>{
+    under_score: &'a str,
     win_options: WinOptions,
     game_history: Vec::<TableState>,
-    key_bindings: &'a HashMap<&'a str, usize>
-    //key_bindings are now a req.  
+    key_bindings: &'a HashMap<&'a str, usize>,
 }
 
 impl<'a> GameMaster<'a>{
     pub fn new(key_bindings_c: &'a HashMap<&'a str, usize>) -> GameMaster<'a> {
+        let under_score: &str = "_";
         let win_options = WinOptions::new();
         let mut game_history = Vec::<TableState>::new();
         game_history.push(TableState::new());
         
         return GameMaster{
+            under_score,
             win_options,
             game_history,
             key_bindings: key_bindings_c,
@@ -210,8 +212,9 @@ impl<'a> GameMaster<'a>{
                 self.npc_random_move();
             }, 
             Piece::Npc => {
+                print!("Your turn: ");
+                std::io::stdout().flush().unwrap();
                 let mut user_input = String::new();
-                print!("User's turn: ");
                 match stdin().read_line(&mut user_input){
                     Ok(_) => (),
                     Err(_) => {
@@ -274,11 +277,9 @@ impl<'a> GameMaster<'a>{
         let rng_pick: usize = rng.gen_range(0..(open_positions.len()));
         self.add_move(Piece::Npc, open_positions[rng_pick]).unwrap(); 
     }
-    
-    //This fn is not in use. Will have it running in v2. Overkill atm.
+   
+    //Left for V2.
     pub fn back_track(&mut self, jumps: u8) -> Result<(), &'static str>{
-    //It's on cleaning up type casts in v2.
-    //TODO: Potential unhandled bugs
         if jumps < 1 as u8 ||  
             jumps*2 >= (self.game_history.len() - 2) as u8 {
             return Err("Backtrack: out of range request.");
@@ -301,19 +302,17 @@ impl<'a> GameMaster<'a>{
         }
         let reference_table = &self.game_history[history_index as usize];
         let t_positions = reference_table.positions();
-        let l = String::from("_"); //Should clean this up.
-        println!("Player: {}", reference_table.player.as_str()); 
-        
-        println!("\t {} | {} | {} ", t_positions[0], t_positions[1], t_positions[2]);
+        let l = self.under_score; 
+        println!("\n\t {} | {} | {} ", t_positions[0], t_positions[1], t_positions[2]);
         println!("\t{:_>3}|{:_>3}|{:_>3}", l, l, l);
         println!("\t {} | {} | {} ", t_positions[3], t_positions[4], t_positions[5]);
         println!("\t{:_>3}|{:_>3}|{:_>3}", l, l, l);
-        println!("\t {} | {} | {} ", t_positions[6], t_positions[7], t_positions[8]);
+        println!("\t {} | {} | {} \n", t_positions[6], t_positions[7], t_positions[8]);
         return Ok(());
     }
 
     pub fn show_labeled_table(&self){
-        let l = "_";
+        let l = self.under_score;
         let mut key : Vec::<&str> = Vec::new(); 
         for (k, _) in self.key_bindings.iter(){
             key.push(k);
@@ -321,11 +320,11 @@ impl<'a> GameMaster<'a>{
         key.sort();
         //Potential bug if user's allowed unrestricted liberties with bindings.
         //This doesn't work if the UTF-8s aren't chronological.
-        println!("\t {}| {}| {} ", key[0], key[1], key[2]);
+        println!("\n\t {}| {}| {} ", key[0], key[1], key[2]);
         println!("\t{:_>3}|{:_>3}|{:_>3}", l, l, l);
         println!("\t {}| {}| {} ", key[3], key[4], key[5]);
         println!("\t{:_>3}|{:_>3}|{:_>3}", l, l, l);
-        println!("\t {}| {}| {} ", key[6], key[7], key[8]);
+        println!("\t {}| {}| {} \n", key[6], key[7], key[8]);
     
     }
 }

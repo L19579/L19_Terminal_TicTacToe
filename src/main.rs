@@ -34,30 +34,33 @@ fn main() {
     println!("Write \"quit\" at any time to exit"); 
     println!("\nHere are you input bindings: ");
     let mut gm = l19::GameMaster::new(&input_bindings);
-    println!("\n\n");
+    //println!("");
     gm.show_labeled_table();
     let mut current_player: l19::Piece = 
         l19::Piece::select_with_int(m_rng.gen_range(0..2));
-        // Explain key bindings here.
-    println!("{} has first move!", current_player.as_str()); 
+        // Explain key bindings here. 
+    println!("    {} has first move!\n", current_player.as_str()); 
+    println!("{:->35}\n", "-");
     current_player = current_player.opposite();
     'top_loop: for _ in 0..9 {
-        for attempt in 1..6 {
+        for attempt in 1..7 {
             match gm.next_mover_w_prompt(&current_player){
-                Ok(()) => break,
+                Ok(()) => {
+                    println!("{:->35}\n", "-");
+                    break;
+                },
                 Err(e) => {
-                    eprintln!("{}", e);
+                    eprintln!("\n{}", e);
                     if e.trim() == "quit" {
                         final_statement = String::from("Stopping the game.");
                         break 'top_loop;
                     }
-                    if attempt == 5{
-                        eprintln!("{}", e);
-                        panic!();
+                    if attempt == 6{
+                        final_statement = String::from("Well.. you tried. Good day!");
+                        break 'top_loop;
                     }
-                    println!("Input binding must be exact, and move legal.");
                     println!
-                        ("Let's give that another try (attempt {}/5): ", attempt);
+                        ("Let's give that another try (attempt {}/5). \n", attempt);
                     continue;
                 },
             }
@@ -70,5 +73,5 @@ fn main() {
             break;
         }
     }
-    println!("\n{}", final_statement);
+    println!("\n{}\n", final_statement);
 }
