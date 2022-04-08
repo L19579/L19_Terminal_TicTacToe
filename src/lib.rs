@@ -15,7 +15,7 @@ use std::{
     fmt, 
 };
 
-/// Piece enum acts as player marker on the table.
+/// Enum acts as player marker on the table.
 pub enum Piece{
     User,
     Npc,
@@ -23,9 +23,10 @@ pub enum Piece{
 }
 
 impl Piece{
-    ///Return Piece representation as &'static str
+    /// Return Piece representation as ``&'static str`
     ///
     /// # Example
+    /// 
     /// ```
     /// let player_one = Piece::Npc;
     /// let player_one_str: &str= player_one.as_str();
@@ -38,10 +39,14 @@ impl Piece{
                 Piece::Clear => "Clear",    
         } 
     }
-    ///Returns the opposite of given piece.
-    ///Panics if Pie::Clear is passed as an argument.
+    /// Returns the opposite of given piece.
+    /// 
+    /// #Panics 
+    /// 
+    /// Panics if Pie::Clear is passed as an argument.
     ///
     /// # Example
+    /// 
     /// ```
     /// let peice : Piece = Piece::User;
     /// let opp_piece = peice.opposite();
@@ -57,8 +62,9 @@ impl Piece{
         } 
     }
 
-    ///Allows return of Peice using u8 as an argument.
-    ///An argument that isn't 0, or 1 returns Piece::Clear.
+    /// Allows return of `Peice` variant using u8 as an argument.
+    /// An argument that isn't 0, or 1 returns Piece::Clear.
+    /// 
     /// # Example
     /// ```
     /// let a_piece: Piece = select_with_int(1);
@@ -77,7 +83,7 @@ impl Piece{
 
 impl Eq for Piece{}
 impl PartialEq for Piece{
-    /// Eq/PartialEq trait implementations for Piece enum.
+    /// Eq/PartialEq trait implementations for `Piece` enum.
     fn eq(&self, other: &Piece) -> bool{
         //Easy to make the obv error here. Tracking runtime
         //bugs on a large codebase, not so much.
@@ -87,7 +93,7 @@ impl PartialEq for Piece{
 
 impl Copy for Piece{}
 impl Clone for Piece{
-    /// Copy/Clone trait implementations for Piece enum.
+    /// Copy/Clone trait implementations for `Piece` enum.
     fn clone(&self) -> Piece {
         return *self;
     }
@@ -95,13 +101,14 @@ impl Clone for Piece{
 
 
 impl fmt::Display for Piece{
-    /// Display trait implementation for Piece. 
+    /// Display trait implementation for `Piece`. 
     /// Returns "X", "O", or " " to formatter.
     /// Used only to print icons on table. 
-    /// See as_str() in Piece for full string representation
+    /// See `as_str()` in Piece for full string representation
     /// of variant.
     /// 
     /// # Example
+    /// 
     /// ```
     /// let user_piece: Piece = Piece::User;
     /// 
@@ -118,7 +125,7 @@ impl fmt::Display for Piece{
     
 }
 
-/// Interface for structured submissions to TableState::duplicate_with_new()
+/// Interface for structured submissions to TableState.duplicate_with_new()
 struct PlaySelector{
     pub piece: Piece,
     pub position: usize, 
@@ -127,7 +134,7 @@ struct PlaySelector{
 }
 
 impl PlaySelector{
-    /// Returns a new PlaySelector object.
+    /// Returns a new `PlaySelector` object.
     fn new (piece: Piece, position: usize) -> PlaySelector {
         return PlaySelector {
             piece,
@@ -136,7 +143,7 @@ impl PlaySelector{
     }
 }
 /// Data struct; holds valid winning table allignments for a
-/// Piece variants.
+/// `Piece` variants.
 struct WinOptions{
     options: [(usize, usize, usize); 8], 
 }
@@ -159,6 +166,7 @@ impl WinOptions{
     }
     /// Returns array of all winning position allignments.
     /// # Example 
+    /// 
     /// ```
     /// let w_pos = WinOptions::new();
     /// 
@@ -171,8 +179,6 @@ impl WinOptions{
 
 /// Designed to be chained in order to track and perpetuate game
 /// state changes. 
-/// `positions` maintains piece positions on table object.
-/// `player` stores variant representing most recent play.
 struct TableState{
     positions: [Piece; 9],
     player: Piece,
@@ -180,10 +186,10 @@ struct TableState{
 
 impl TableState{
     /// Returns a new TableState object.
-    /// `positions` and `player` are set to hold Piece::Clear
+    /// `positions` and `player` are set to hold `Piece::Clear`
     /// to denote empty table.
     /// This is typically called once to initiate chain of
-    /// TableState objects that track the game's progression.
+    /// `TableState` objects that track the game's progression.
     fn new() -> TableState {
         return TableState{
             positions: [Piece::Clear; 9],
@@ -191,27 +197,28 @@ impl TableState{
         };
     }
     
-    /// Returns reference to array representing Piece variant
+    /// Returns reference to array representing `Piece` variant
     /// positions on board.
     fn positions(&self) -> &[Piece; 9]{
         return &self.positions;
     }
     
-    /// Returns reference to Piece representing variant last
+    /// Returns reference to `Piece` representing variant last
     /// played on board.
     fn player(&self) -> &Piece{
         return &self.player
     }
-    /// Returns a new TableState holding last table state's 
+    /// Returns a new `TableState` holding last table state's 
     /// values plus one new change. Returned object is expeceted
     /// to be stored in a statically ordered collection representing
     /// game state transitions. 
     ///
-    /// Expects PlaySelector object as argument.
-    /// Returns Result::Err(e) if position insert is occupied by
-    /// a non Piece::Clear variant.
+    /// Expects `PlaySelector` object as argument.
+    /// Returns `Result::Err(e)` if position insert is occupied by
+    /// a non `Piece::Clear` variant.
     ///
     /// # Example 
+    /// 
     /// ```
     /// let game_progression = Vec::from(TableState::new());
     /// let new_move = PlaySelector::new(Piece::User, 1);
@@ -242,10 +249,11 @@ impl TableState{
             );
     }
     /// Returns `true` if non Piece::Clear variants on the table
-    /// matchs a WinOptions.options tuple. This indicates that either
-    /// Piece::User, or Piece::Npc holds a winning allignment.
+    /// matchs a `WinOptions.options` tuple. This indicates that either
+    /// `Piece::User`, or `Piece::Npc` holds a winning allignment.
     ///
     /// # Example
+    /// 
     /// ```
     /// let game_progression = Vec::from(TableState::new());
     /// let new_move = PlaySelector::new(Piece::User, 3);
@@ -271,13 +279,13 @@ impl TableState{
 
 impl Copy for TableState{}
 impl Clone for TableState{
-    /// Copy/Clone trait implementations for TableState.
+    /// Copy/Clone trait implementations for `TableState`.
     fn clone(&self) -> TableState{
         return *self;
     }
 }
 
-//interface to main.rs
+/// Game controller and primary interface to main.rs
 pub struct GameMaster <'a>{
     under_score: &'a str,
     win_options: WinOptions,
@@ -286,6 +294,14 @@ pub struct GameMaster <'a>{
 }
 
 impl<'a> GameMaster<'a>{
+    /// Returns time bound `GameMaster` object.
+    /// This offers main.rs an opportunity to set custom `key_bindings`.
+    /// See main.rs for default bindings.
+    ///
+    ///  `under_score` holds "_"; needed for repeated prints.
+    ///  `win_options` holds winning allignment options.
+    ///  `game_history` tracks table state progression.
+    ///  `key_bindings` stores input binding data. 
     pub fn new(key_bindings_c: &'a HashMap<&'a str, usize>) -> GameMaster<'a> {
         let under_score: &str = "_";
         let win_options = WinOptions::new();
@@ -299,7 +315,24 @@ impl<'a> GameMaster<'a>{
             key_bindings: key_bindings_c,
         }
     }
-
+    
+    /// Automates: User input fetch, Npc plays, legality checks, and `TableState`
+    /// terminal visualization.
+    /// This can only be called if `game_history.last().player()` holds a non
+    /// Piece::Clear variant.
+    ///
+    /// # Example
+    /// 
+    /// ```
+    /// // -- snip 
+    /// let gm = GameMaster::new(&key_bindings);
+    /// gm.add_move(Piece::Npc, 2);
+    /// gm.next_mover_w_prompt(Piece::Npc);
+    /// 
+    /// let last_piece : &str = gm.game_history.last().player().as_str();
+    /// assert_eq!(gm.game_history.len(), 3);
+    /// assert_eq!(last_piece, "User"); 
+    /// ``` 
     pub fn next_mover_w_prompt
         (&mut self, last_piece: &Piece) 
             -> Result<(), &'static str> { 
@@ -353,7 +386,22 @@ impl<'a> GameMaster<'a>{
             self.print_table(0).unwrap();
             return Ok(());
         } 
-
+    
+    /// This function returns a new table state when called for move submission with
+    /// any `Piece` variant.
+    /// `Result::Err(e)` is returned if position of interest is held by a non `Peice;:Clear`
+    /// variant.
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// // -- snip
+    /// let gm = GameMaster::new(&key_bindings);
+    /// GameMaster.add_move(Piece::Npc, 5);
+    /// 
+    /// let npc_as_str = GameMaster.game_history.last().player().as_str();
+    /// assert_eq!(npc_as_str, "Npc");
+    /// ```
     pub fn add_move(&mut self, piece: Piece, position: usize) -> Result <(), &'static str>{
         let new_play = PlaySelector::new(piece, position);
         self.game_history.push(
@@ -367,6 +415,7 @@ impl<'a> GameMaster<'a>{
         return Ok(());
     }
 
+    /// Initiates random legal move for Npc via `add_move()`. 
     pub fn npc_random_move(&mut self){
         let mut open_positions = Vec::<usize>::new();
         let mut counter = 0;
@@ -381,7 +430,12 @@ impl<'a> GameMaster<'a>{
         self.add_move(Piece::Npc, open_positions[rng_pick]).unwrap(); 
     }
    
-    //Left for V2.
+    /// Allows user to jump to a previous game state.
+    /// Returns `Result::Err(e)` if rangle is beyond `game_history.len()`
+    /// Always returns to game state awaiting user's input. 
+    /// 
+    /// This function is NOT in use and hasn't been tested. It will
+    /// see updates on next release. 
     pub fn back_track(&mut self, jumps: u8) -> Result<(), &'static str>{
         if jumps < 1 as u8 ||  
             jumps*2 >= (self.game_history.len() - 2) as u8 {
@@ -392,12 +446,31 @@ impl<'a> GameMaster<'a>{
         println!("Jumping back to play #{}", self.game_history.len());
         return Ok(());
     }
-
+    
+    /// This function is an extension of `TableState.is_win()`. The primary
+    /// difference being that it's aware of game state rather than just
+    /// table state. 
+    /// Returns `true` and winning non `Piece::Clear` variant if win is detected 
+    /// on last play.
     pub fn check_win(&self) -> (bool, &Piece) {
         return (self.game_history.last().unwrap().is_win(&self.win_options),
             self.game_history.last().unwrap().player());
     }
-   
+    
+    /// Prints a visualization of an indexed TableState in game_history on command line.
+    /// Indexing is done in reverse. `game_history.last()` == 0.
+    /// 
+    /// Returns `Result::Err`(e) if `TableState` requested isn't within range.
+    ///
+    /// # Example 
+    /// 
+    /// ```
+    /// // -- snip
+    /// let gm = GameMaster::new(&key_bindings);
+    /// gm.add_move(Piece::Npc, 1);
+    /// gm.add_move(Piece::User, 4);
+    /// gm.print_table();
+    /// ```
     pub fn print_table(&self, reversed_history_index: isize) -> Result<(), &'static str>{
         let history_index = (self.game_history.len() as isize - reversed_history_index) - 1;
         if history_index < 0 {
@@ -413,7 +486,8 @@ impl<'a> GameMaster<'a>{
         println!("\t {} | {} | {} \n", t_positions[6], t_positions[7], t_positions[8]);
         return Ok(());
     }
-
+    
+    /// Prints visualization of key binding positions on command line.
     pub fn show_labeled_table(&self){
         let l = self.under_score;
         let mut key : Vec::<&str> = Vec::new(); 
