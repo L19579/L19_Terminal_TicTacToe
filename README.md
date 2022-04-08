@@ -1,20 +1,58 @@
 # L19_Terminal_TicTacToe
 ---
 ## Purpose
-Testing Cargo.io submissions, versioning, and documentation.
+- Testing Cargo.io submissions, versioning, and documentation.
+- Tests will be written around a game of TicTacToe
 ---
 ##Game Description
-###  Tests will be written around a game of TicTacToe
+- Test environment: Linux, x86\_64.
+#### Instructions
+##### Install
+```bash
+  git clone https://github.com/L19579/L19_Terminal_TicTacToe.git # Download repo
+  cd #insert_repo_directory
+  cargo build --release
+```
+##### Run
+```bash
+  ./target/release/l19_terminal_tictactoe
+```
 
-   |   |                        a1 |a2 |a3 \ 
----|---|---                     ---|---|---\
-   |   |      --> Positions:    b1 |b2 |b3 \
----|---|---                     ---|---|---\
-   |   |                        c1 |c2 |c3 
+##### Controls 
+- Game input bindings are set in main.rs. System will adapt to UTF-8 binding
+  inputs 2 chars in length listed chronologically. 
+```rust
+  use l19_terminal_tictactoe as l19;
+  
+  //-- snip
+  
+  let input_bindings: Hashmap::<&str, usize> = HashMap::from([
+      ("a1", 0),
+      ("a2", 1),
+      ("a3", 2),
+      ("b1", 3),
+      ("b2", 4),
+      ("b3", 5),
+      ("c1", 6),
+      ("c2", 7),
+      ("c3", 8),
+
+  ]);
+
+  let mut gm = l19::GameMaster::new(&input_bindings);
+  
+  //-- snip
+```
+- Type in input when prompted. This "bot" is just a pseudo random number generator. It takes effort to lose.
+
+![Opener](https://raw.githubusercontent.com/L19579/L19_Terminal_TicTacToe/main/imgs/4_start_large.png) ![Closer](https://raw.githubusercontent.com/L19579/L19_Terminal_TicTacToe/main/imgs/5_end_large.png)
+
 ---
 ### External Links and Documentation.
-[Placeholder #1: Crates.io] (https://www.crates.io)
-[Placeholder #2: Docs,rs] (https://www.Docs.rs)
+- [Placeholder #1: Crates.io] (https://www.crates.io)
+- [Placeholder #2: Docs,rs] (https://www.Docs.rs)
+
+## Documentation
 ---
 ###  Initial targets
 - [x] Randomizer decides which player starts.
@@ -61,5 +99,4 @@ md formatting tests; to be removed.
 ---
 #### Images
 
-![Opener](https://raw.githubusercontent.com/L19579/L19_Terminal_TicTacToe/main/imgs/4_start_large.png) ![Closer](https://raw.githubusercontent.com/L19579/L19_Terminal_TicTacToe/main/imgs/5_end_large.png)
 
