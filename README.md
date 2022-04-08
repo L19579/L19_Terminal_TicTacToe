@@ -55,7 +55,7 @@ See: [Rustup](https://rustup.rs/)
 ---
 
 ## External links and documentation
-Package: [Crates.io](https://crates.io/crates/l19_terminal_tictactoe/)
+Package (0.1.2): [Crates.io](https://crates.io/crates/l19_terminal_tictactoe/)
 
 Published documentation: [Docs.rs](https://docs.rs/l19_terminal_tictactoe/0.1.0/l19_terminal_tictactoe/)
 
