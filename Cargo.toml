@@ -1,6 +1,6 @@
 [package]
 name = "l19_terminal_tictactoe"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A game of Tic Tac Toe played on the command line; Educational exercise."
 license = "MIT OR Apache-2.0"

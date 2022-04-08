@@ -8,21 +8,21 @@
 ## Instructions
 #### Environment 
   Linux, x86_64.
-##### Installing rust
+#### Installing rust
 See: [Rustup](https://rustup.rs/)
 
-##### Installing L19_Terminal_TicTacToe
+#### Installing L19_Terminal_TicTacToe
 ```bash
   git clone https://github.com/L19579/L19_Terminal_TicTacToe.git # Download repo
   cd #insert_repo_directory
   cargo build --release
 ```
-##### Launching
+#### Launching
 ```bash
   ./target/release/l19_terminal_tictactoe
 ```
 
-##### Controls 
+#### Controls 
 - Game input bindings are set in main.rs. System will adapt to UTF-8 binding
   inputs 2 chars in length listed chronologically. 
 ```rust
@@ -56,12 +56,12 @@ See: [Rustup](https://rustup.rs/)
 
 ## Documentation
 ### External Links and Documentation.
-[Placeholder #1: Crates.io] (https://www.crates.io)
-[Placeholder #2: Docs,rs] (https://www.Docs.rs)
+[Crates.io] (https://crates.io/crates/l19_terminal_tictactoe)
+[Docs,rs] (https://docs.rs/l19_terminal_tictactoe/0.1.0/l19_terminal_tictactoe/)
 
 ---
 
-## TODO
+## TODOs - Complete 
 - [x] Randomizer decides which player starts.
 - [x] X is assigned to player 1, O to player 2.
 - [x] Turn based, updated board is printed below. Terminal isn't cleared for simplicity.
@@ -69,6 +69,6 @@ See: [Rustup](https://rustup.rs/)
 - [x] X / O are drawn when player/AI make their move.
 - [x] Table state is saved with every move.
 - [x] System checks for wins after positions are submitted.
-- [ ] Full code documentation on Docs.rs
-- [ ] Top level description on Github; Listed as release.
-- [ ] Top level description on Crates.io; Listed as release.
+- [x] Full code documentation on Docs.rs
+- [x] Top level description on Github; Listed as release.
+- [x] Top level description on Crates.io; Listed as release.

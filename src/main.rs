@@ -3,19 +3,6 @@ use std::collections::HashMap;
 use l19_terminal_tictactoe as l19;
 use l19_terminal_tictactoe::key_bindings::default_bindings;
 fn main() {
-    //TODO:
-    //[x] Specify input bindings
-    //[x] Assign starting player with random selector.
-    //[x] Gameplay loop:
-    //  [x] Check for quit prompt, and execute
-    //  [-] Check for backtrack request
-    //      >> Dropped, logic is getting bloated.
-    //  [x] Print table  
-    //  [x] Take player input, print updated table
-    //  [x] Submit AI input, print updated table.  
-    //  [x] Check for Win:
-    //      [x] If true announce winner and exit loop.
-    //[x] Announce game exit.
     let mut final_statement = String::from("Tie match! Thanks for playing."); 
     let mut m_rng = thread_rng();
     let input_bindings : HashMap::<&str, usize> = default_bindings();
@@ -24,7 +11,6 @@ fn main() {
     println!("Write \"quit\" at any time to exit"); 
     println!("\nHere are you input bindings: ");
     let mut gm = l19::GameMaster::new(&input_bindings);
-    //println!("");
     gm.show_labeled_table();
     let mut current_player: l19::Piece = 
         l19::Piece::select_with_int(m_rng.gen_range(0..2));
