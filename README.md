@@ -2,7 +2,8 @@
 
 ## Purpose: Educational
 
-Testing Cargo.io submissions, versioning, and documentation.\ 
+Testing Cargo.io submissions, versioning, and documentation.
+
 Tests will be written around a game of TicTacToe. See TODO. 
 
 ---
