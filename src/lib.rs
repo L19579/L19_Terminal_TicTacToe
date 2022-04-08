@@ -15,7 +15,7 @@ use std::{
     fmt, 
 };
 
-/// Represents player status on the table.
+/// Piece enum acts as player marker on the table.
 pub enum Piece{
     User,
     Npc,
@@ -77,6 +77,7 @@ impl Piece{
 
 impl Eq for Piece{}
 impl PartialEq for Piece{
+    /// Eq/PartialEq trait implementations for Piece enum.
     fn eq(&self, other: &Piece) -> bool{
         //Easy to make the obv error here. Tracking runtime
         //bugs on a large codebase, not so much.
@@ -86,6 +87,7 @@ impl PartialEq for Piece{
 
 impl Copy for Piece{}
 impl Clone for Piece{
+    /// Copy/Clone trait implementations for Piece enum.
     fn clone(&self) -> Piece {
         return *self;
     }
@@ -93,6 +95,18 @@ impl Clone for Piece{
 
 
 impl fmt::Display for Piece{
+    /// Display trait implementation for Piece. 
+    /// Returns "X", "O", or " " to formatter.
+    /// Used only to print icons on table. 
+    /// See as_str() in Piece for full string representation
+    /// of variant.
+    /// 
+    /// # Example
+    /// ```
+    /// let user_piece: Piece = Piece::User;
+    /// 
+    /// println!("Symbol for user is: {}", user_piece);
+    /// ```
     fn fmt(&self, formatter: &mut fmt::Formatter)
         -> fmt::Result{
             return match *self{
@@ -104,6 +118,7 @@ impl fmt::Display for Piece{
     
 }
 
+/// Interface for structured submissions to TableState::duplicate_with_new()
 struct PlaySelector{
     pub piece: Piece,
     pub position: usize, 
@@ -112,6 +127,7 @@ struct PlaySelector{
 }
 
 impl PlaySelector{
+    /// Returns a new PlaySelector object.
     fn new (piece: Piece, position: usize) -> PlaySelector {
         return PlaySelector {
             piece,
@@ -119,12 +135,14 @@ impl PlaySelector{
         };
     }
 }
-
+/// Data struct; holds valid winning table allignments for a
+/// Piece variants.
 struct WinOptions{
     options: [(usize, usize, usize); 8], 
 }
 
 impl WinOptions{
+    /// Returns a new WinOptions object.
     fn new() -> WinOptions {
        return WinOptions{
            options: [
@@ -139,33 +157,70 @@ impl WinOptions{
            ],
        };   
     }
-
+    /// Returns array of all winning position allignments.
+    /// # Example 
+    /// ```
+    /// let w_pos = WinOptions::new();
+    /// 
+    /// println!("Winning positions are {:?}", w_pos.options());
+    /// ```
     fn options(&self) -> [(usize, usize, usize); 8] {
         return self.options;
     }
 }
 
+/// Designed to be chained in order to track and perpetuate game
+/// state changes. 
+/// `positions` maintains piece positions on table object.
+/// `player` stores variant representing most recent play.
 struct TableState{
     positions: [Piece; 9],
     player: Piece,
 }
 
 impl TableState{
+    /// Returns a new TableState object.
+    /// `positions` and `player` are set to hold Piece::Clear
+    /// to denote empty table.
+    /// This is typically called once to initiate chain of
+    /// TableState objects that track the game's progression.
     fn new() -> TableState {
         return TableState{
             positions: [Piece::Clear; 9],
             player: Piece::Clear,
         };
     }
-
+    
+    /// Returns reference to array representing Piece variant
+    /// positions on board.
     fn positions(&self) -> &[Piece; 9]{
         return &self.positions;
     }
     
+    /// Returns reference to Piece representing variant last
+    /// played on board.
     fn player(&self) -> &Piece{
         return &self.player
     }
-    
+    /// Returns a new TableState holding last table state's 
+    /// values plus one new change. Returned object is expeceted
+    /// to be stored in a statically ordered collection representing
+    /// game state transitions. 
+    ///
+    /// Expects PlaySelector object as argument.
+    /// Returns Result::Err(e) if position insert is occupied by
+    /// a non Piece::Clear variant.
+    ///
+    /// # Example 
+    /// ```
+    /// let game_progression = Vec::from(TableState::new());
+    /// let new_move = PlaySelector::new(Piece::User, 1);
+    /// game_progression.push(new_move);
+    ///
+    /// let last_piece_as_str: &str = 
+    ///     game_progression.last().position[1].as_str;
+    /// assert_eq!(last_piece_as_str, "User");
+    /// ```
     fn duplicate_with_new(&self, new_play: PlaySelector) 
         -> Result<TableState, &'static str >{
         
@@ -186,7 +241,19 @@ impl TableState{
                 }
             );
     }
-
+    /// Returns `true` if non Piece::Clear variants on the table
+    /// matchs a WinOptions.options tuple. This indicates that either
+    /// Piece::User, or Piece::Npc holds a winning allignment.
+    ///
+    /// # Example
+    /// ```
+    /// let game_progression = Vec::from(TableState::new());
+    /// let new_move = PlaySelector::new(Piece::User, 3);
+    /// game_progression.push(TableState::duplicate_with_new(new_move));
+    /// let is_win = game_progression.last().is_win();
+    ///
+    /// assert_eq!(is_win, false);
+    /// ```
     fn is_win(&self, win_options: &WinOptions) -> bool{
         for win_option in win_options.options(){
             
@@ -204,6 +271,7 @@ impl TableState{
 
 impl Copy for TableState{}
 impl Clone for TableState{
+    /// Copy/Clone trait implementations for TableState.
     fn clone(&self) -> TableState{
         return *self;
     }
