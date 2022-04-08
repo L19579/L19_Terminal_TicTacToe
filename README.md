@@ -57,7 +57,7 @@ See: [Rustup](https://rustup.rs/)
 ## Documentation
 ### External Links and Documentation.
 [Placeholder #1: Crates.io] (https://www.crates.io)
-Placeholder #2: Docs,rs] (https://www.Docs.rs)
+[Placeholder #2: Docs,rs] (https://www.Docs.rs)
 
 ---
 

@@ -1,3 +1,10 @@
+//! # L19_Terminal_TicTacToe
+//!
+//! `L19_Terminal_TicTacToe` is simple game of Tic Tac Toe made to run
+//! a command line. It was created as an educacutional exercise, and to
+//! improve the creator's ability to document and log changes on various
+//! local, and remote platforms.
+
 use rand::{ Rng, thread_rng };
 use std::{
     io::{Write, stdin,},
@@ -8,6 +15,7 @@ use std::{
     fmt, 
 };
 
+/// Represents player status on the table.
 pub enum Piece{
     User,
     Npc,
@@ -15,6 +23,14 @@ pub enum Piece{
 }
 
 impl Piece{
+    ///Return Piece representation as &'static str
+    ///
+    /// # Example
+    /// ```
+    /// let player_one = Piece::Npc;
+    /// let player_one_str: &str= player_one.as_str();
+    /// assert_eq!("Npc", player_one);
+    /// ```
     pub fn as_str(&self) -> &'static str {
         return match *self{
                 Piece::User => "User",   
@@ -22,7 +38,17 @@ impl Piece{
                 Piece::Clear => "Clear",    
         } 
     }
-
+    ///Returns the opposite of given piece.
+    ///Panics if Pie::Clear is passed as an argument.
+    ///
+    /// # Example
+    /// ```
+    /// let peice : Piece = Piece::User;
+    /// let opp_piece = peice.opposite();
+    ///     
+    /// let opp_as_str: &str = opp_piece.as_str();
+    /// assert_eq!("Npc", opp_as_str);
+    /// ```
     pub fn opposite(&self) -> Piece {
         match *self {
             Piece::User => Piece::Npc,
@@ -30,7 +56,16 @@ impl Piece{
             _ => panic!("Invalid input."),
         } 
     }
-    
+
+    ///Allows return of Peice using u8 as an argument.
+    ///An argument that isn't 0, or 1 returns Piece::Clear.
+    /// # Example
+    /// ```
+    /// let a_piece: Piece = select_with_int(1);
+    /// let a_piece_as_str: &str = a_piece.as_str();
+    ///
+    /// assert_eq!("Npc", a_piece_as_str);
+    /// ```
     pub fn select_with_int(choice: u8) -> Piece {
         match choice {
             0 => Piece::User,
