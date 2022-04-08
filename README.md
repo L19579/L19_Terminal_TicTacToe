@@ -5,19 +5,17 @@
 - Tests will be written around a game of TicTacToe.
 ---
 
-## Game Description
+## Instructions
 #### Environment 
   Linux, x86_64.
-#### Instructions
-##### Install
+##### Installing rust
+See: [Rustup](https://rustup.rs/)
+
+##### Installing L19_Terminal_TicTacToe
 ```bash
   git clone https://github.com/L19579/L19_Terminal_TicTacToe.git # Download repo
   cd #insert_repo_directory
   cargo build --release
-```
-##### Run
-```bash
-  ./target/release/l19_terminal_tictactoe
 ```
 
 ##### Controls 
@@ -44,6 +42,11 @@
   let mut gm = l19::GameMaster::new(&input_bindings);
   
   //-- snip
+```
+
+##### Launching
+```bash
+  ./target/release/l19_terminal_tictactoe
 ```
 
 - Type in input when prompted. This "bot" is just a pseudorandom number generator. It takes effort to lose.
