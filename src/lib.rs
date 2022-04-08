@@ -4,7 +4,9 @@
 //! a command line. It was created as an educacutional exercise, and to
 //! improve the creator's ability to document and log changes on various
 //! local, and remote platforms.
-
+//!  
+//! Examples are NOT Doc-test enabled.
+pub mod key_bindings;
 use rand::{ Rng, thread_rng };
 use std::{
     io::{Write, stdin,},
@@ -48,6 +50,8 @@ impl Piece{
     /// # Example
     /// 
     /// ```
+    /// use l19_terminal_tictactoe;
+    ///
     /// let peice : Piece = Piece::User;
     /// let opp_piece = peice.opposite();
     ///     
@@ -66,7 +70,10 @@ impl Piece{
     /// An argument that isn't 0, or 1 returns Piece::Clear.
     /// 
     /// # Example
+    ///
     /// ```
+    /// use l19_terminal_tictactoe;
+    ///
     /// let a_piece: Piece = select_with_int(1);
     /// let a_piece_as_str: &str = a_piece.as_str();
     ///
@@ -110,6 +117,8 @@ impl fmt::Display for Piece{
     /// # Example
     /// 
     /// ```
+    /// use l19_terminal_tictactoe;
+    ///
     /// let user_piece: Piece = Piece::User;
     /// 
     /// println!("Symbol for user is: {}", user_piece);
@@ -168,6 +177,8 @@ impl WinOptions{
     /// # Example 
     /// 
     /// ```
+    /// use l19_terminal_tictactoe;
+    ///
     /// let w_pos = WinOptions::new();
     /// 
     /// println!("Winning positions are {:?}", w_pos.options());
@@ -220,6 +231,8 @@ impl TableState{
     /// # Example 
     /// 
     /// ```
+    /// use l19_terminal_tictactoe;
+    ///
     /// let game_progression = Vec::from(TableState::new());
     /// let new_move = PlaySelector::new(Piece::User, 1);
     /// game_progression.push(new_move);
@@ -255,6 +268,8 @@ impl TableState{
     /// # Example
     /// 
     /// ```
+    /// use l19_terminal_tictactoe;
+    ///
     /// let game_progression = Vec::from(TableState::new());
     /// let new_move = PlaySelector::new(Piece::User, 3);
     /// game_progression.push(TableState::duplicate_with_new(new_move));
@@ -324,8 +339,10 @@ impl<'a> GameMaster<'a>{
     /// # Example
     /// 
     /// ```
-    /// // -- snip 
-    /// let gm = GameMaster::new(&key_bindings);
+    /// use l19_terminal_tictactoe;
+    ///
+    /// let bindings = key_bindings::default_bindings();
+    /// let gm = GameMaster::new(&bindings);
     /// gm.add_move(Piece::Npc, 2);
     /// gm.next_mover_w_prompt(Piece::Npc);
     /// 
@@ -395,11 +412,13 @@ impl<'a> GameMaster<'a>{
     /// # Example
     /// 
     /// ```
-    /// // -- snip
-    /// let gm = GameMaster::new(&key_bindings);
-    /// GameMaster.add_move(Piece::Npc, 5);
+    /// use l19_terminal_tictactoe;
+    ///
+    /// let bindings = key_bindings::default_bindings();
+    /// let gm = GameMaster::new(&bindings);
+    /// gm.add_move(Piece::Npc, 5);
     /// 
-    /// let npc_as_str = GameMaster.game_history.last().player().as_str();
+    /// let npc_as_str = gm.game_history.last().player().as_str();
     /// assert_eq!(npc_as_str, "Npc");
     /// ```
     pub fn add_move(&mut self, piece: Piece, position: usize) -> Result <(), &'static str>{
@@ -465,8 +484,10 @@ impl<'a> GameMaster<'a>{
     /// # Example 
     /// 
     /// ```
-    /// // -- snip
-    /// let gm = GameMaster::new(&key_bindings);
+    /// use l19_terminal_tictactoe;
+    ///
+    /// let bindings = key_bindings::default_bindings();
+    /// let gm = GameMaster::new(&bindings);
     /// gm.add_move(Piece::Npc, 1);
     /// gm.add_move(Piece::User, 4);
     /// gm.print_table();

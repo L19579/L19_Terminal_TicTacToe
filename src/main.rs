@@ -1,7 +1,7 @@
 use rand::{ Rng, thread_rng };
 use std::collections::HashMap;
 use l19_terminal_tictactoe as l19;
-
+use l19_terminal_tictactoe::key_bindings::default_bindings;
 fn main() {
     //TODO:
     //[x] Specify input bindings
@@ -18,17 +18,7 @@ fn main() {
     //[x] Announce game exit.
     let mut final_statement = String::from("Tie match! Thanks for playing."); 
     let mut m_rng = thread_rng();
-    let input_bindings : HashMap::<&str, usize> = HashMap::from([
-            ("a1", 0),
-            ("a2", 1),
-            ("a3", 2),
-            ("b1", 3),
-            ("b2", 4),
-            ("b3", 5),
-            ("c1", 6),
-            ("c2", 7),
-            ("c3", 8),
-    ]);
+    let input_bindings : HashMap::<&str, usize> = default_bindings();
     
     println!("Launching L19_Terminal_TicTacToe");
     println!("Write \"quit\" at any time to exit"); 

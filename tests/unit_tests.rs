@@ -1,29 +1,12 @@
 use l19_terminal_tictactoe as l19;
-
-//Testing custom 'input bindings'.. if you will.
-#[Test]
-fn check_input_bindings(){
-    let input_bindins : HashMap::<&str, usize> = HashMap::from([
-        ("a1", 0),
-        ("a2", 1),
-        ("a3", 2),
-        ("b1", 3),
-        ("b2", 4),
-        ("b3", 5),
-        ("c1", 6),
-        ("c2", 7),
-        ("c3", 8),
-    ]);
-
-    let gm = 19::GameMaster::new();
-
-}
+use l19_terminal_tictactoe::key_bindings::default_bindings;
 
 //Piece legal placement in 9/9 spaces.
 #[test]
 fn check_legal_placement(){
-    let mut gm = l19::GameMaster::new();
-    for i in 0..9{
+    let bindings = default_bindings();
+    let mut gm = l19::GameMaster::new(&bindings);
+    for _ in 0..9{
         gm.npc_random_move();
     }
 }
@@ -31,7 +14,6 @@ fn check_legal_placement(){
 //Detecting all possible wins sans bot
 #[test]
 fn check_all_wins(){
-    let win_count: u8 = 0;
     let win_possibilities: [(usize, usize, usize) ; 8]
         = [
             (0, 1, 2), 
@@ -45,10 +27,11 @@ fn check_all_wins(){
         ];
 
     for (a, b, c) in win_possibilities {
-        let mut gm = l19::GameMaster::new();
-        gm.add_move(l19::Piece::User, a); 
-        gm.add_move(l19::Piece::User, b); 
-        gm.add_move(l19::Piece::User, c);
+        let bindings = default_bindings();
+        let mut gm = l19::GameMaster::new(&bindings);
+        gm.add_move(l19::Piece::User, a).unwrap(); 
+        gm.add_move(l19::Piece::User, b).unwrap(); 
+        gm.add_move(l19::Piece::User, c).unwrap(); 
         let (is_win, player) = gm.check_win();
         
         if *player != l19::Piece::User {
@@ -58,10 +41,11 @@ fn check_all_wins(){
     }
     
     for (a, b, c) in win_possibilities {
-        let mut gm = l19::GameMaster::new();
-        gm.add_move(l19::Piece::Npc, a); 
-        gm.add_move(l19::Piece::Npc, b); 
-        gm.add_move(l19::Piece::Npc, c);
+        let bindings = default_bindings();
+        let mut gm = l19::GameMaster::new(&bindings);
+        gm.add_move(l19::Piece::Npc, a).unwrap(); 
+        gm.add_move(l19::Piece::Npc, b).unwrap(); 
+        gm.add_move(l19::Piece::Npc, c).unwrap(); 
         let (is_win, player) = gm.check_win();
         
         if *player != l19::Piece::Npc {
@@ -71,10 +55,11 @@ fn check_all_wins(){
     }
 
     for (a, b, c) in win_possibilities {
-        let mut gm = l19::GameMaster::new();
-        gm.add_move(l19::Piece::Clear, a); 
-        gm.add_move(l19::Piece::Clear, b); 
-        gm.add_move(l19::Piece::Clear, c);
+        let bindings = default_bindings();
+        let mut gm = l19::GameMaster::new(&bindings);
+        gm.add_move(l19::Piece::Clear, a).unwrap(); 
+        gm.add_move(l19::Piece::Clear, b).unwrap(); 
+        gm.add_move(l19::Piece::Clear, c).unwrap(); 
         let (is_win, player) = gm.check_win();
         
         if *player != l19::Piece::Clear {
@@ -101,10 +86,11 @@ fn check_some_non_win(){
         ];
 
     for (a, b, c) in some_non_wins {
-        let mut gm = l19::GameMaster::new();
-        gm.add_move(l19::Piece::User, a);
-        gm.add_move(l19::Piece::User, b);
-        gm.add_move(l19::Piece::User, c);
+        let bindings = default_bindings();
+        let mut gm = l19::GameMaster::new(&bindings);
+        gm.add_move(l19::Piece::User, a).unwrap();
+        gm.add_move(l19::Piece::User, b).unwrap();
+        gm.add_move(l19::Piece::User, c).unwrap();
         let (is_win, _) = gm.check_win();
         assert_eq!(is_win, false);
     }    
