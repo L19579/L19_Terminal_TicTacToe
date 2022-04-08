@@ -1,5 +1,8 @@
 use std::collections::HashMap;
-
+/// Returns default input bindings as HashMap.
+/// Hash allows for convenient modification but
+/// user MUST maintain structure of single key, val 
+/// pairing, and UTF-8 chronological order.
 pub fn default_bindings<'a>() -> HashMap::<&'a str, usize>{
     let input_bindings: HashMap::<&'a str, usize> =
         HashMap::<&'a str, usize>::from([
