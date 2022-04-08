@@ -1,8 +1,10 @@
 # L19_Terminal_TicTacToe
 
-## Purpose
-- Testing Cargo.io submissions, versioning, and documentation.
-- Tests will be written around a game of TicTacToe.
+## Purpose: Educational
+
+Testing Cargo.io submissions, versioning, and documentation. 
+Tests will be written around a game of TicTacToe. See [TODO](#todo). 
+
 ---
 
 ## Instructions
@@ -61,7 +63,7 @@ Published documentation: [Docs.rs](https://docs.rs/l19_terminal_tictactoe/0.1.0/
 
 ---
 
-## TODOs - Complete 
+## TODO - Complete 
 - [x] Randomizer decides which player starts.
 - [x] X is assigned to player 1, O to player 2.
 - [x] Turn based, updated board is printed below. Terminal isn't cleared for simplicity.
