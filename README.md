@@ -17,6 +17,10 @@ See: [Rustup](https://rustup.rs/)
   cd #insert_repo_directory
   cargo build --release
 ```
+##### Launching
+```bash
+  ./target/release/l19_terminal_tictactoe
+```
 
 ##### Controls 
 - Game input bindings are set in main.rs. System will adapt to UTF-8 binding
@@ -44,11 +48,6 @@ See: [Rustup](https://rustup.rs/)
   //-- snip
 ```
 
-##### Launching
-```bash
-  ./target/release/l19_terminal_tictactoe
-```
-
 - Type in input when prompted. This "bot" is just a pseudorandom number generator. It takes effort to lose.
 
 ![Opener](https://raw.githubusercontent.com/L19579/L19_Terminal_TicTacToe/main/imgs/4_start_large.png) ![Closer](https://raw.githubusercontent.com/L19579/L19_Terminal_TicTacToe/main/imgs/5_end_large.png)
@@ -57,8 +56,8 @@ See: [Rustup](https://rustup.rs/)
 
 ## Documentation
 ### External Links and Documentation.
-- [Placeholder #1: Crates.io] (https://www.crates.io)
-- [Placeholder #2: Docs,rs] (https://www.Docs.rs)
+[Placeholder #1: Crates.io] (https://www.crates.io)
+Placeholder #2: Docs,rs] (https://www.Docs.rs)
 
 ---
 
