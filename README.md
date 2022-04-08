@@ -6,7 +6,8 @@
 ---
 
 ## Game Description
-- Test environment: Linux, x86_64.
+#### Environment 
+  Linux, x86_64.
 #### Instructions
 ##### Install
 ```bash
@@ -45,10 +46,11 @@
   //-- snip
 ```
 
-- Type in input when prompted. This "bot" is just a pseudo random number generator. It takes effort to lose.
-<div align=center>
+- Type in input when prompted. This "bot" is just a pseudorandom number generator. It takes effort to lose.
+<div align="center">
 ![Opener](https://raw.githubusercontent.com/L19579/L19_Terminal_TicTacToe/main/imgs/4_start_large.png) ![Closer](https://raw.githubusercontent.com/L19579/L19_Terminal_TicTacToe/main/imgs/5_end_large.png)
 </div>
+
 ---
 
 ## Documentation
